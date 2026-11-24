@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Level Up · Get a little better every day</title>
+<meta name="description" content="Level Up drafts a realistic day from everything you're working towards, then makes finishing it feel like a game. Weekly planning, a morning check-in, a focus timer, habits, streaks and XP.">
+<meta name="theme-color" content="#141A2E">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta property="og:title" content="Level Up · Get a little better every day">
+<meta property="og:description" content="A planner that drafts a realistic day, then makes finishing it feel like a game.">
+<meta property="og:image" content="assets/og-image.png">
+<style>
+  @font-face { font-family: 'Chakra Petch'; font-style: italic; font-weight: 600; font-display: swap; src: url(assets/fonts/chakra-petch-latin-600-italic.woff2) format('woff2'); }
+  @font-face { font-family: 'Chakra Petch'; font-style: italic; font-weight: 700; font-display: swap; src: url(assets/fonts/chakra-petch-latin-700-italic.woff2) format('woff2'); }
+  @font-face { font-family: 'Space Grotesk'; font-weight: 500; font-display: swap; src: url(assets/fonts/space-grotesk-latin-500-normal.woff2) format('woff2'); }
+  @font-face { font-family: 'Space Grotesk'; font-weight: 700; font-display: swap; src: url(assets/fonts/space-grotesk-latin-700-normal.woff2) format('woff2'); }
+  @font-face { font-family: 'Inter'; font-weight: 400; font-display: swap; src: url(assets/fonts/inter-latin-400-normal.woff2) format('woff2'); }
+  @font-face { font-family: 'Inter'; font-weight: 500; font-display: swap; src: url(assets/fonts/inter-latin-500-normal.woff2) format('woff2'); }
+  @font-face { font-family: 'Inter'; font-weight: 600; font-display: swap; src: url(assets/fonts/inter-latin-600-normal.woff2) format('woff2'); }
+  @font-face { font-family: 'Inter'; font-weight: 700; font-display: swap; src: url(assets/fonts/inter-latin-700-normal.woff2) format('woff2'); }
+
+  :root {
+    --night: #10152A;
+    --bg: #141A2E;
+    --card: #1C2340;
+    --card-2: #222A4A;
+    --border: #2C3557;
+    --text: #F1F2F8;
+    --muted: #A3AAC4;
+    --violet: #7A6BFF;
+    --violet-soft: #B3AAFF;
+    --gold: #FFD95A;
+    --gold-deep: #F5B82E;
+    --streak: #FF8A5B;
+    --freeze: #8EC5FF;
+    --display: 'Space Grotesk', system-ui, sans-serif;
+    --brand: 'Chakra Petch', 'Space Grotesk', sans-serif;
+    --body: 'Inter', system-ui, -apple-system, sans-serif;
+    --max: 1120px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { animation: none !important; transition: none !important; } }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--body); font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  a { color: var(--violet-soft); }
+  a:hover { color: #fff; }
+  img, svg { display: block; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 24px; }
+  h1, h2, h3 { font-family: var(--display); line-height: 1.15; margin: 0; letter-spacing: -0.01em; }
+  h2 { font-size: clamp(30px, 4vw, 44px); font-weight: 700; }
+  h3 { font-size: 20px; font-weight: 700; }
+  p { margin: 0; }
+  .eyebrow { font-family: var(--brand); font-style: italic; font-weight: 600; font-size: 14px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--violet-soft); }
+  .lead { font-size: 19px; color: var(--muted); max-width: 640px; }
+  section { padding: 88px 0; }
+  .section-head { display: flex; flex-direction: column; gap: 14px; margin-bottom: 48px; }
+
+  /* ---------- Nav ---------- */
+  .nav { position: sticky; top: 0; z-index: 10; background: rgba(16, 21, 42, 0.82); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(44, 53, 87, 0.6); }
+  .nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); }
+  .logo img { width: 34px; height: 34px; }
+  .logo span { font-family: var(--brand); font-style: italic; font-weight: 700; font-size: 21px; letter-spacing: -0.5px; }
+  .logo span b { color: var(--violet); font-weight: 700; }
+  .nav-links { display: flex; align-items: center; gap: 28px; font-size: 15px; font-weight: 500; }
+  .nav-links a { color: var(--muted); text-decoration: none; }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links a.btn-primary, .nav-links a.btn-primary:hover { color: #fff; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 24px; border-radius: 14px; font-family: var(--display); font-weight: 700; font-size: 16px; text-decoration: none; transition: transform 0.15s ease, background 0.15s ease; }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--violet); color: #fff; box-shadow: 0 8px 24px rgba(122, 107, 255, 0.35); }
+  .btn-primary:hover { background: #8A7DFF; color: #fff; }
+  .btn-ghost { border: 1px solid var(--border); color: var(--text); }
+  .btn-ghost:hover { background: var(--card); color: var(--text); }
+  .nav .btn { padding: 10px 18px; font-size: 14px; border-radius: 12px; }
+  @media (max-width: 760px) { .nav-links a:not(.btn) { display: none; } }
+
+  /* ---------- Hero ---------- */
+  .hero { position: relative; overflow: hidden; padding: 72px 0 96px; background: radial-gradient(ellipse 80% 60% at 70% 100%, #2B2C66 0%, rgba(22, 28, 51, 0) 70%), linear-gradient(180deg, var(--night) 0%, var(--bg) 100%); }
+  .hero .wrap { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 56px; align-items: center; }
+  .hero-copy { display: flex; flex-direction: column; gap: 26px; }
+  .wordmark { font-family: var(--brand); font-style: italic; font-weight: 700; font-size: clamp(64px, 10vw, 128px); line-height: 0.95; letter-spacing: -2px; margin: 0;
+    background: linear-gradient(180deg, #FFFFFF 0%, #E9ECF3 45%, #B4BBCB 55%, #EEF1F6 100%); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 4px 0 #05070F); }
+  .tagline { font-family: var(--brand); font-style: italic; font-weight: 600; font-size: clamp(15px, 1.8vw, 19px); letter-spacing: 0.18em; text-transform: uppercase; color: var(--violet-soft); }
+  .hero .lead { font-size: 20px; color: #C9CEE0; }
+  .hero-ctas { display: flex; flex-wrap: wrap; gap: 12px; }
+  .hero-note { font-size: 14px; color: var(--muted); }
+  @media (max-width: 900px) { .hero .wrap { grid-template-columns: 1fr; } .hero-phone { justify-self: center; } }
+
+  /* ---------- Phone mock-ups (drawn in HTML, sample data) ---------- */
+  .phone { width: 320px; flex-shrink: 0; border-radius: 44px; padding: 10px; background: linear-gradient(160deg, #3A4270, #161C33); box-shadow: 0 40px 80px rgba(5, 7, 15, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.15); }
+  .screen { position: relative; border-radius: 35px; overflow: hidden; background: var(--bg); padding: 22px 16px 18px; font-size: 13px; line-height: 1.4; display: flex; flex-direction: column; gap: 12px; min-height: 600px; }
+  .screen .notch { position: absolute; top: 9px; left: 50%; width: 88px; height: 22px; margin-left: -44px; border-radius: 12px; background: #05070F; }
+  .s-date { margin-top: 18px; font-size: 11.5px; color: var(--muted); }
+  .s-title { font-family: var(--display); font-weight: 700; font-size: 23px; line-height: 1.1; }
+  .xp { display: flex; align-items: center; gap: 10px; }
+  .lv { width: 38px; height: 38px; border-radius: 11px; background: var(--violet); display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; flex-shrink: 0; }
+  .lv small { font-size: 8px; font-weight: 700; letter-spacing: 0.08em; opacity: 0.8; line-height: 1; }
+  .lv b { font-family: var(--brand); font-style: italic; font-size: 17px; line-height: 1; }
+  .xp-bar { flex: 1; }
+  .xp-bar .row { display: flex; justify-content: space-between; font-size: 10.5px; }
+  .xp-bar .row span:first-child { color: var(--gold); font-weight: 700; }
+  .xp-bar .row span:last-child { color: var(--muted); }
+  .track { height: 7px; border-radius: 99px; background: var(--card-2); overflow: hidden; margin-top: 5px; }
+  .fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--violet), var(--gold)); }
+  .chips { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; font-size: 11px; font-weight: 700; }
+  .ic { display: inline-block; vertical-align: -1px; margin-right: 3px; }
+  .chips .fire { color: var(--streak); } .chips .ice { color: var(--freeze); }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 12px; }
+  .focus { display: flex; align-items: center; gap: 12px; border-color: rgba(122, 107, 255, 0.45); }
+  .ring { width: 46px; height: 46px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: conic-gradient(var(--violet) 0 54%, var(--card-2) 54% 100%); }
+  .ring span { width: 36px; height: 36px; border-radius: 50%; background: var(--card); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; }
+  .kicker { font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--violet-soft); }
+  .focus .name { font-family: var(--display); font-weight: 700; font-size: 16px; }
+  .meta { font-size: 11px; color: var(--muted); }
+  .play { margin-left: auto; padding: 7px 10px; border-radius: 10px; background: var(--violet); color: #fff; font-weight: 700; font-size: 10px; }
+  .task { display: flex; align-items: center; gap: 10px; }
+  .tick { width: 22px; height: 22px; border-radius: 50%; border: 2px solid rgba(163, 170, 196, 0.45); flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .tick.on { background: var(--violet); border-color: var(--violet); }
+  .tick.on::after { content: ''; width: 9px; height: 5px; border-left: 2px solid #fff; border-bottom: 2px solid #fff; transform: rotate(-45deg) translate(1px, -1px); }
+  .task .t { font-weight: 600; font-size: 13.5px; }
+  .task.done .t { color: var(--muted); text-decoration: line-through; }
+  .task .x { margin-left: auto; font-weight: 700; font-size: 11px; color: var(--violet-soft); }
+  .pills { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pill { padding: 6px 11px; border-radius: 99px; background: var(--card-2); font-weight: 600; font-size: 11.5px; }
+  .pill.on { background: var(--violet); color: #fff; }
+  .pill .p { opacity: 0.75; font-size: 10px; margin-left: 4px; }
+  .pill .p.amber { color: var(--gold-deep); opacity: 1; }
+  .reason { font-size: 10.5px; color: var(--muted); }
+  .badge { padding: 2px 7px; border-radius: 99px; font-size: 9px; font-weight: 700; background: var(--card-2); color: var(--violet-soft); flex-shrink: 0; }
+  .badge.gold { background: rgba(255, 217, 90, 0.15); color: var(--gold); }
+  .attention { border-color: rgba(245, 184, 46, 0.45); background: rgba(245, 184, 46, 0.08); }
+  .attention .meta { color: var(--gold-deep); font-weight: 700; }
+  .segment { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; font-size: 11px; font-weight: 600; text-align: center; }
+  .segment span { padding: 7px 0; color: var(--muted); }
+  .segment span.on { background: var(--violet); color: #fff; }
+  .startday { margin-top: auto; border-radius: 14px; background: var(--violet); color: #fff; text-align: center; padding: 12px; font-family: var(--display); font-weight: 700; font-size: 15px; }
+  .days { display: flex; flex-direction: column; gap: 8px; }
+  .day { padding: 10px 12px; }
+  .day .top { display: flex; justify-content: space-between; font-family: var(--display); font-weight: 700; font-size: 13px; margin-bottom: 6px; }
+  .day .top span:last-child { font-family: var(--body); font-weight: 600; font-size: 11px; color: var(--muted); }
+  .day.today { border-color: var(--violet); }
+  .mini { display: flex; flex-wrap: wrap; gap: 4px; }
+  .mini span { display: inline-flex; align-items: center; gap: 5px; padding: 3px 8px; border-radius: 99px; background: var(--card-2); font-size: 10px; }
+  .mini span i { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+  .mini span.block { background: rgba(122, 107, 255, 0.22); color: var(--violet-soft); font-weight: 700; }
+  .mini span.draft { background: none; border: 1px dashed rgba(122, 107, 255, 0.7); color: var(--violet-soft); }
+  .strip { display: flex; gap: 6px; overflow: hidden; }
+  .strip span { flex-shrink: 0; padding: 6px 9px; border-radius: 10px; border: 1px solid var(--border); font-size: 10.5px; font-weight: 600; background: var(--card); }
+  .strip span b { margin-left: 4px; color: var(--violet-soft); }
+  .strip span.short { border-color: rgba(245, 184, 46, 0.5); background: rgba(245, 184, 46, 0.08); }
+  .strip span.short b { color: var(--gold-deep); }
+  .wallet { border-color: rgba(255, 217, 90, 0.4); background: rgba(255, 217, 90, 0.08); }
+  .wallet .big { font-family: var(--display); font-weight: 700; font-size: 28px; color: var(--gold); line-height: 1.1; }
+  .reward { display: flex; flex-direction: column; gap: 8px; }
+  .reward .head { display: flex; justify-content: space-between; align-items: baseline; }
+  .reward .head b { font-size: 13.5px; }
+  .reward.ready { border-color: rgba(255, 217, 90, 0.5); }
+  .buy { text-align: center; padding: 8px; border-radius: 10px; background: var(--violet); color: #fff; font-weight: 700; font-size: 12px; }
+  .reward .track .fill.v { background: var(--violet); }
+  .reward .track .fill.g { background: var(--gold); }
+  .habit { display: flex; align-items: center; gap: 10px; }
+  .habit.met { border-color: rgba(255, 217, 90, 0.45); background: rgba(255, 217, 90, 0.08); }
+  .habit .tick.gold { background: var(--gold); border-color: var(--gold); }
+  .habit .tick.gold::after { content: ''; width: 9px; height: 5px; border-left: 2px solid #10152A; border-bottom: 2px solid #10152A; transform: rotate(-45deg) translate(1px, -1px); }
+  .habit .n { font-weight: 600; font-size: 13.5px; flex: 1; }
+  .habit .f { color: var(--streak); font-size: 11px; font-weight: 700; }
+  .habit .x { font-size: 11px; font-weight: 700; color: var(--muted); }
+  .habit.met .x { color: var(--gold); }
+
+  /* ---------- Who it's for ---------- */
+  .for { padding: 64px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--night); }
+  .for .wrap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+  .for h3 { font-size: 18px; margin-bottom: 8px; }
+  .for p { color: var(--muted); font-size: 15.5px; }
+  @media (max-width: 800px) { .for .wrap { grid-template-columns: 1fr; } }
+
+  /* ---------- The loop ---------- */
+  .loop { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; counter-reset: step; }
+  .step { position: relative; background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 10px; }
+  .step::before { counter-increment: step; content: counter(step); width: 34px; height: 34px; border-radius: 10px; background: rgba(122, 107, 255, 0.18); color: var(--violet-soft); display: flex; align-items: center; justify-content: center; font-family: var(--brand); font-style: italic; font-weight: 700; font-size: 18px; }
+  .step .when { font-size: 13px; font-weight: 600; color: var(--violet-soft); }
+  .step p { color: var(--muted); font-size: 15.5px; }
+  .loop-note { margin-top: 20px; color: var(--muted); font-size: 15px; }
+  @media (max-width: 960px) { .loop { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .loop { grid-template-columns: 1fr; } }
+
+  /* ---------- Planner explainer ---------- */
+  .planner { background: linear-gradient(180deg, var(--bg), var(--night)); }
+  .planner .wrap { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 64px; align-items: center; }
+  .rules { display: flex; flex-direction: column; gap: 18px; margin-top: 28px; }
+  .rule { display: flex; gap: 14px; }
+  .rule .dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 9px; flex-shrink: 0; background: var(--violet); }
+  .rule b { display: block; font-size: 16.5px; }
+  .rule span { color: var(--muted); font-size: 15.5px; }
+  .suggest { display: flex; flex-direction: column; gap: 10px; }
+  .sug { display: flex; align-items: center; gap: 14px; background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 14px 16px; }
+  .sug .body { flex: 1; min-width: 0; }
+  .sug .title { font-weight: 600; }
+  .sug .why { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .sug .why span { font-size: 12.5px; padding: 3px 9px; border-radius: 99px; background: var(--card-2); color: #C9CEE0; }
+  .sug .why span.amber { background: rgba(245, 184, 46, 0.12); color: var(--gold-deep); }
+  .sug .why span.gold { background: rgba(255, 217, 90, 0.14); color: var(--gold); }
+  .sug .mins { font-size: 13px; color: var(--muted); flex-shrink: 0; }
+  .sug .add { width: 34px; height: 34px; border-radius: 10px; background: var(--violet); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 600; flex-shrink: 0; }
+  .suggest-caption { font-size: 13px; color: var(--muted); margin-top: 4px; }
+  @media (max-width: 900px) { .planner .wrap { grid-template-columns: 1fr; } }
+
+  /* ---------- Features ---------- */
+  .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .feature { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 26px; display: flex; flex-direction: column; gap: 10px; }
+  .feature .icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: rgba(122, 107, 255, 0.15); color: var(--violet-soft); }
+  .feature .icon.gold { background: rgba(255, 217, 90, 0.13); color: var(--gold); }
+  .feature .icon.fire { background: rgba(255, 138, 91, 0.13); color: var(--streak); }
+  .feature .icon.ice { background: rgba(142, 197, 255, 0.13); color: var(--freeze); }
+  .feature p { color: var(--muted); font-size: 15.5px; }
+  @media (max-width: 960px) { .features { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .features { grid-template-columns: 1fr; } }
+
+  /* ---------- Screens ---------- */
+  .screens { background: var(--night); overflow: hidden; }
+  .phones { display: flex; gap: 32px; justify-content: center; align-items: flex-start; }
+  .phones .phone:nth-child(2) { margin-top: 48px; }
+  .phone-cap { text-align: center; margin-top: 16px; font-size: 14px; color: var(--muted); }
+  @media (max-width: 1080px) { .phones { justify-content: flex-start; overflow-x: auto; padding: 0 4px 24px; scroll-snap-type: x mandatory; } .phones > div { scroll-snap-align: center; } .phones .phone:nth-child(2) { margin-top: 0; } }
+
+  /* ---------- Privacy + beta ---------- */
+  .trust { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .trust div { border-left: 2px solid var(--violet); padding: 4px 0 4px 18px; }
+  .trust b { display: block; font-family: var(--display); font-size: 17px; margin-bottom: 6px; }
+  .trust span { color: var(--muted); font-size: 15.5px; }
+  @media (max-width: 800px) { .trust { grid-template-columns: 1fr; } }
+  .beta { text-align: center; background: radial-gradient(ellipse 70% 80% at 50% 120%, #2B2C66 0%, rgba(20, 26, 46, 0) 70%), var(--bg); border-top: 1px solid var(--border); }
+  .beta .wrap { display: flex; flex-direction: column; align-items: center; gap: 22px; }
+  .beta img { width: 88px; height: 88px; filter: drop-shadow(0 16px 32px rgba(5, 7, 15, 0.6)); }
+  .beta .lead { margin: 0 auto; }
+  footer { padding: 32px 0 48px; color: var(--muted); font-size: 14px; }
+  footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+</style>
+</head>
+<body>
+
+<nav class="nav" aria-label="Main">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="Level Up, back to top">
+      <img src="assets/icon.svg" alt="" width="34" height="34">
+      <span>LEVEL <b>UP</b></span>
+    </a>
+    <div class="nav-links">
+      <a href="#how">How it works</a>
+      <a href="#planner">The planner</a>
+      <a href="#features">Features</a>
+      <a class="btn btn-primary" href="#beta">Join the beta</a>
+    </div>
+  </div>
+</nav>
+
+<main id="top">
+
+  <!-- ===================== Hero ===================== -->
+  <header class="hero">
+    <div class="wrap">
+      <div class="hero-copy">
+        <h1 class="wordmark">LEVEL UP</h1>
+        <p class="tagline">Get a little better every day</p>
+        <p class="lead">A planner that drafts a realistic day from everything you're working towards, then makes finishing it feel like a game.</p>
+        <div class="hero-ctas">
+          <a class="btn btn-primary" href="#beta">Join the beta</a>
+          <a class="btn btn-ghost" href="#how">See how it works</a>
+        </div>
+        <p class="hero-note">For iPhone and Mac. Installs from the browser, works offline.</p>
+      </div>
+
+      <div class="hero-phone" aria-label="The Today screen, with sample data" role="img">
+        <div class="phone">
+          <div class="screen">
+            <div class="notch"></div>
+            <div>
+              <p class="s-date">Tuesday 25 November</p>
+              <p class="s-title">Today's quest</p>
+            </div>
+            <div class="xp">
+              <div class="lv"><small>LV</small><b>7</b></div>
+              <div class="xp-bar">
+                <div class="row"><span>+214 today</span><span>1,240 / 1,500 XP</span></div>
+                <div class="track"><div class="fill" style="width:83%"></div></div>
+              </div>
+              <div class="chips"><span class="fire"><svg class="ic" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2c1 4 5 6 5 11a5 5 0 0 1-10 0c0-3 2-4 2-7 2 1 3 3 3 5"/></svg>12</span><span class="ice"><svg class="ic" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 2v20M4.9 6.9l14.2 10.2M19.1 6.9 4.9 17.1"/></svg>4</span></div>
+            </div>
+            <div class="card focus">
+              <div class="ring"><span>54%</span></div>
+              <div>
+                <p class="kicker">Focus block</p>
+                <p class="name">Thesis</p>
+                <p class="meta">2h 10m of 4h</p>
+              </div>
+              <span class="play">▶ Start</span>
+            </div>
+            <div class="card task done"><span class="tick on"></span><span class="t">Chapter 3 figures</span><span class="x">+90</span></div>
+            <div class="card task"><span class="tick"></span><span class="t">Appendicitis review</span><span class="x">45m</span></div>
+            <div class="card task"><span class="tick"></span><span class="t">Linear algebra 2.4</span><span class="x">45m</span></div>
+            <div class="card">
+              <p class="kicker" style="margin-bottom:8px">Daily choice · Exercise</p>
+              <div class="pills">
+                <span class="pill on">Run <span class="p">1/2</span></span>
+                <span class="pill">Gym <span class="p amber">0/2</span></span>
+                <span class="pill">Hike <span class="p">0/1 mo</span></span>
+                <span class="pill">Rest</span>
+              </div>
+            </div>
+            <div class="card task"><span class="tick"></span><span class="t">Piano: Clair de lune</span><span class="x">30m</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================== Who it's for ===================== -->
+  <div class="for">
+    <div class="wrap">
+      <div>
+        <h3>A big push, and a life around it</h3>
+        <p>An exam, a thesis, a qualification: hours every day on one thing, without dropping everything else.</p>
+      </div>
+      <div>
+        <h3>Lots of lists, not enough days</h3>
+        <p>Revision topics, chapters, songs to learn, books to read. Level Up spreads them across your week so nothing quietly disappears.</p>
+      </div>
+      <div>
+        <h3>Wanting to enjoy learning again</h3>
+        <p>XP, levels, streaks and rewards you choose yourself make steady progress something to look forward to.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== The loop ===================== -->
+  <section id="how">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">How it works</p>
+        <h2>Four moments a week keep everything moving</h2>
+        <p class="lead">No time slots and no rigid schedule. A realistic plan, adjusted to how the week is actually going.</p>
+      </div>
+      <div class="loop">
+        <div class="step">
+          <p class="when">Once a week</p>
+          <h3>Plan the week</h3>
+          <p>Level Up drafts the week: areas spread across the days, exercise mapped out, your focus time protected. Tap a day to change it, then keep it.</p>
+        </div>
+        <div class="step">
+          <p class="when">Each morning · 2 minutes</p>
+          <h3>Check in</h3>
+          <p>Say how your energy is. See what needs attention. Today's plan resizes to fit, with extras if you've got more in you.</p>
+        </div>
+        <div class="step">
+          <p class="when">Through the day</p>
+          <h3>Focus and log</h3>
+          <p>Start a timer on anything. It chimes at your estimate. Log what you did and where it lives, and collect the XP.</p>
+        </div>
+        <div class="step">
+          <p class="when">Each evening</p>
+          <h3>Close the day</h3>
+          <p>See your XP and focus time. Send anything unfinished back to its list, to tomorrow, or to the weekend.</p>
+        </div>
+      </div>
+      <p class="loop-note">Whatever you move to tomorrow is waiting in tomorrow's check-in, so the loop starts again.</p>
+    </div>
+  </section>
+
+  <!-- ===================== The planner ===================== -->
+  <section id="planner" class="planner">
+    <div class="wrap">
+      <div>
+        <div class="section-head" style="margin-bottom:0">
+          <p class="eyebrow">The planner</p>
+          <h2>It suggests what's next, and tells you why</h2>
+          <p class="lead">Suggestions come from plain rules you can read, not a black box. Every one shows its reasons.</p>
+        </div>
+        <div class="rules">
+          <div class="rule"><span class="dot"></span><div><b>Balance</b><span>Areas behind their weekly target rise as the week runs out.</span></div></div>
+          <div class="rule"><span class="dot"></span><div><b>Nothing neglected</b><span>The longer an area goes untouched, the stronger its case.</span></div></div>
+          <div class="rule"><span class="dot"></span><div><b>Spaced review</b><span>Covered topics come back at 7, 30, 90 and 180 days.</span></div></div>
+          <div class="rule"><span class="dot"></span><div><b>Daily quotas</b><span>"One rare condition a day" gets a slot every day it runs.</span></div></div>
+          <div class="rule"><span class="dot"></span><div><b>A wildcard</b><span>One slot for something you haven't touched in a while, so the day isn't all duty.</span></div></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="suggest" role="img" aria-label="Example suggestions, each with its reasons">
+          <div class="sug">
+            <div class="body">
+              <p class="title">Linear algebra 2.5</p>
+              <div class="why"><span class="amber">Maths is 2 days short, 3 left</span><span>Next in Chapter 2</span></div>
+            </div>
+            <span class="mins">45m</span><span class="add">+</span>
+          </div>
+          <div class="sug">
+            <div class="body">
+              <p class="title">Acute pancreatitis</p>
+              <div class="why"><span class="amber">Review 12 days overdue</span><span>High priority</span></div>
+            </div>
+            <span class="mins">30m</span><span class="add">+</span>
+          </div>
+          <div class="sug">
+            <div class="body">
+              <p class="title">Sort 2019 photos</p>
+              <div class="why"><span class="gold">Wildcard: untouched for 23 days</span></div>
+            </div>
+            <span class="mins">30m</span><span class="add">+</span>
+          </div>
+          <div class="sug">
+            <div class="body">
+              <p class="title">Achalasia</p>
+              <div class="why"><span>Daily: Rare conditions</span><span>Next in Rare conditions</span></div>
+            </div>
+            <span class="mins">20m</span><span class="add">+</span>
+          </div>
+          <p class="suggest-caption">Sample suggestions as they appear in the morning check-in.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== Features ===================== -->
+  <section id="features">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Everything in it</p>
+        <h2>Built for steady progress, not busywork</h2>
+      </div>
+      <div class="features">
+        <div class="feature">
+          <span class="icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M10 2h4"/></svg></span>
+          <h3>Focus timer</h3>
+          <p>Start from anything. It chimes at your estimate, extends by 15 or 30 minutes, and logs the real time when you finish. Survives a locked phone.</p>
+        </div>
+        <div class="feature">
+          <span class="icon fire"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2c1 4 5 6 5 11a5 5 0 0 1-10 0c0-3 2-4 2-7 2 1 3 3 3 5"/></svg></span>
+          <h3>Habits and streaks</h3>
+          <p>Up by 6, lights out by 10, screen time under two hours. Your habits, your goals, with a streak for every day you keep them.</p>
+        </div>
+        <div class="feature">
+          <span class="icon ice"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 2v20M4.9 6.9l14.2 10.2M19.1 6.9 4.9 17.1"/></svg></span>
+          <h3>Freezes, not guilt</h3>
+          <p>Start with five. Earn more by levelling up and keeping perfect weeks. One bad day doesn't wipe out a month of work.</p>
+        </div>
+        <div class="feature">
+          <span class="icon gold"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9h18v12H3zM12 9v12M3 9l3-5h12l3 5M8 4l4 5 4-5"/></svg></span>
+          <h3>A reward shop you stock</h3>
+          <p>Earn XP for every minute of real work. Spend it on rewards you choose and price yourself, with an estimate of how many days each will take.</p>
+        </div>
+        <div class="feature">
+          <span class="icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21V10M9 21V4M15 21v-7M21 21V8"/></svg></span>
+          <h3>Count what matters</h3>
+          <p>Books read, km run, conditions covered, hours revised. Make a counter for anything and watch it build across the year.</p>
+        </div>
+        <div class="feature">
+          <span class="icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span>
+          <h3>Capture in seconds</h3>
+          <p>Tasks, topics and questions from anywhere with one button. Questions go to an inbox that nudges you after a day.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== Screens ===================== -->
+  <section class="screens" aria-label="Screens from the app">
+    <div class="wrap">
+      <div class="section-head" style="text-align:center;align-items:center">
+        <p class="eyebrow">A look inside</p>
+        <h2>Plan, check in, earn</h2>
+      </div>
+    </div>
+    <div class="phones">
+
+      <!-- Morning check-in -->
+      <div>
+        <div class="phone" role="img" aria-label="The morning check-in, with sample data">
+          <div class="screen">
+            <div class="notch"></div>
+            <div>
+              <p class="s-date kicker" style="margin-top:18px">Morning check-in</p>
+              <p class="s-title">Tuesday 25 November</p>
+            </div>
+            <p class="meta">How's your energy?</p>
+            <div class="segment"><span>Low</span><span class="on">Normal</span><span>High</span></div>
+            <p class="meta">Needs attention</p>
+            <div class="card task attention"><div><p class="t">Which drugs to stop pre-op?</p><p class="meta">Waiting 26 hours</p></div><span class="x" style="color:#fff;background:var(--violet);padding:4px 9px;border-radius:8px">+</span></div>
+            <div class="card task attention"><div><p class="t">Order cat food</p><p class="meta">Due today</p></div><span class="badge">In today</span></div>
+            <p class="meta" style="display:flex;justify-content:space-between"><span>Today's plan</span><span style="color:var(--violet-soft);font-weight:700">2h 15m of 2h 30m</span></p>
+            <div class="card task"><div style="flex:1"><p class="t">Appendicitis review</p><p class="reason">Surgery is 1 day short · Review due</p></div><span class="badge">45m</span></div>
+            <div class="card task"><div style="flex:1"><p class="t">Linear algebra 2.4</p><p class="reason">Next in Chapter 2</p></div><span class="badge">45m</span></div>
+            <div class="card task"><div style="flex:1"><p class="t">Sort 2019 photos</p><p class="reason">Untouched for 23 days</p></div><span class="badge gold">Wildcard</span></div>
+            <div class="startday">Start the day</div>
+          </div>
+        </div>
+        <p class="phone-cap">Morning check-in</p>
+      </div>
+
+      <!-- Weekly plan -->
+      <div>
+        <div class="phone" role="img" aria-label="The weekly plan, with sample data">
+          <div class="screen">
+            <div class="notch"></div>
+            <div>
+              <p class="s-date">24 Nov – 30 Nov</p>
+              <p class="s-title">Plan your week</p>
+            </div>
+            <div class="strip"><span class="short">Maths<b>2/4</b></span><span>Piano<b>5/5</b></span><span class="short">Gym<b>1/2</b></span></div>
+            <div class="days">
+              <div class="card day"><div class="top"><span>Mon 24</span><span>6h 45m</span></div><div class="mini"><span class="block">Thesis 4h</span><span><i style="background:#7A6BFF"></i>Gym</span><span><i style="background:#FF8A5B"></i>Appendicitis</span><span><i style="background:#3EC6A8"></i>Maths 2.3</span></div></div>
+              <div class="card day today"><div class="top"><span>Tue 25 <span style="color:var(--violet-soft);font-size:11px">Today</span></span><span>6h 30m</span></div><div class="mini"><span class="block">Thesis 4h</span><span><i style="background:#7A6BFF"></i>Run</span><span><i style="background:#3EC6A8"></i>Maths 2.4</span><span><i style="background:#F5B82E"></i>Piano</span></div></div>
+              <div class="card day"><div class="top"><span>Wed 26</span><span>6h 15m</span></div><div class="mini"><span class="block">Thesis 4h</span><span class="draft"><i style="background:#7A6BFF"></i>Gym</span><span class="draft"><i style="background:#FF8A5B"></i>Pancreatitis</span><span class="draft"><i style="background:#F5B82E"></i>Piano</span></div></div>
+              <div class="card day"><div class="top"><span>Thu 27</span><span>6h 30m</span></div><div class="mini"><span class="block">Thesis 4h</span><span class="draft"><svg class="ic" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 2v20M4.9 6.9l14.2 10.2M19.1 6.9 4.9 17.1"/></svg>Rest</span><span class="draft"><i style="background:#3EC6A8"></i>Maths 2.5</span><span class="draft"><i style="background:#FF8A5B"></i>Achalasia</span></div></div>
+              <div class="card day"><div class="top"><span>Sat 29</span><span>2h</span></div><div class="mini"><span class="draft"><i style="background:#7A6BFF"></i>Run</span><span class="draft"><i style="background:#F5B82E"></i>Piano</span><span class="draft"><i style="background:#A3AAC4"></i>Sort photos</span></div></div>
+              <div class="card day"><div class="top"><span>Sun 30</span><span>1h 30m</span></div><div class="mini"><span class="draft"><i style="background:#7A6BFF"></i>Hike</span><span class="draft"><i style="background:#3EC6A8"></i>Maths 2.6</span></div></div>
+            </div>
+          </div>
+        </div>
+        <p class="phone-cap">Weekly plan, with a draft to edit</p>
+      </div>
+
+      <!-- Habits + shop -->
+      <div>
+        <div class="phone" role="img" aria-label="Habits and the reward shop, with sample data">
+          <div class="screen">
+            <div class="notch"></div>
+            <div>
+              <p class="s-date">Tuesday 25 November</p>
+              <p class="s-title">Habits</p>
+            </div>
+            <div class="card habit met"><span class="tick gold"></span><span class="n">Up by 6am</span><span class="f"><svg class="ic" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2c1 4 5 6 5 11a5 5 0 0 1-10 0c0-3 2-4 2-7 2 1 3 3 3 5"/></svg>12</span><span class="x">+15</span></div>
+            <div class="card habit met"><span class="tick gold"></span><span class="n">Use Level Up</span><span class="f"><svg class="ic" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2c1 4 5 6 5 11a5 5 0 0 1-10 0c0-3 2-4 2-7 2 1 3 3 3 5"/></svg>30</span><span class="x">+15</span></div>
+            <div class="card habit"><span class="tick"></span><span class="n">In bed by 9pm</span><span class="f"><svg class="ic" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2c1 4 5 6 5 11a5 5 0 0 1-10 0c0-3 2-4 2-7 2 1 3 3 3 5"/></svg>8</span><span class="x">+15</span></div>
+            <div class="card habit"><span class="tick"></span><span class="n">Lights out by 10pm</span><span class="f"><svg class="ic" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2c1 4 5 6 5 11a5 5 0 0 1-10 0c0-3 2-4 2-7 2 1 3 3 3 5"/></svg>8</span><span class="x">+15</span></div>
+            <p class="s-title" style="font-size:19px;margin-top:6px">Reward shop</p>
+            <div class="card wallet"><p class="kicker" style="color:var(--gold)">To spend</p><p class="big">3,420 XP</p><p class="meta">About 410 XP a day lately</p></div>
+            <div class="card reward ready"><div class="head"><b>Meal out</b><span class="meta">2,500 XP</span></div><div class="track"><div class="fill g" style="width:100%"></div></div><div class="buy">Buy</div></div>
+            <div class="card reward"><div class="head"><b>New running shoes</b><span class="meta">9,000 XP</span></div><div class="track"><div class="fill v" style="width:38%"></div></div><p class="meta">About 14 days at your pace</p></div>
+          </div>
+        </div>
+        <p class="phone-cap">Habits, streaks and the reward shop</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== Trust ===================== -->
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Yours, and only yours</p>
+        <h2>Private by design</h2>
+      </div>
+      <div class="trust">
+        <div><b>Only you can see your data</b><span>Every row in the database belongs to one person, and the database itself refuses anyone else.</span></div>
+        <div><b>On your phone and laptop</b><span>Installs from the browser on iPhone and Mac. Syncs between them, and keeps working offline.</span></div>
+        <div><b>No ads, no feeds</b><span>Nothing to scroll and nothing competing for your attention. Just your plan and your progress.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== Beta ===================== -->
+  <section id="beta" class="beta">
+    <div class="wrap">
+      <img src="assets/icon.svg" alt="Level Up app icon" width="88" height="88">
+      <p class="eyebrow">Private beta</p>
+      <h2>Level Up is invite-only for now</h2>
+      <p class="lead">It's being tested by a small group before a wider launch. If you'd like to try it, ask Luke for an invite.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Level Up</span>
+    <span>Made in Glasgow</span>
+  </div>
+</footer>
+
+</body>
+</html>
